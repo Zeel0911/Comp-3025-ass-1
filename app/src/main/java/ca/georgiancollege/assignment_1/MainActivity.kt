@@ -75,11 +75,11 @@ class MainActivity : AppCompatActivity() {
                     for (i in 0 until searchArray.length()) {
                         val obj = searchArray.getJSONObject(i)
                         val movie = Movie(
-                            title = obj.optString("title", "N/A"),
-                            year = obj.optString("year", "N/A"),
+                            title = obj.optString("Title", "N/A"),
+                            year = obj.optString("Year", "N/A"),
                             imdbID = obj.optString("imdbID", ""),
-                            type = obj.optString("type", ""),
-                            poster = obj.optString("poster", "")
+                            type = obj.optString("Type", ""),
+                            poster = obj.optString("Poster", "")
                         )
                         movies.add(movie)
                     }
