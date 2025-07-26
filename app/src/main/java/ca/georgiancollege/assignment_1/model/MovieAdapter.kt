@@ -37,9 +37,9 @@ class MovieAdapter(
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = movies[position]
-        holder.titleTextView.text = movie.Title
+        holder.titleTextView.text = movie.title
         holder.studioTextView.text = "Studio: N/A"
         holder.ratingTextView.text = "Rating: N/A"
-        holder.yearTextView.text = "Year: ${movie.Year}"
+        holder.yearTextView.text = "Year: ${movie.year}"
     }
 }
