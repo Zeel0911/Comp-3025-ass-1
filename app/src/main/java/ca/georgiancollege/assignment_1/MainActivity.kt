@@ -31,16 +31,17 @@ class MainActivity : AppCompatActivity() {
 
         // Setup RecyclerView
         movieAdapter = MovieAdapter(movieList) { selectedMovie ->
-            // Go to detail screen
             val intent = Intent(this, MovieDetailsActivity::class.java)
             intent.putExtra("imdbID", selectedMovie.imdbID)
             startActivity(intent)
         }
 
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.adapter = movieAdapter
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = movieAdapter
+        }
 
-        // Search button click
+        // Search button click listener
         binding.searchButton.setOnClickListener {
             val query = binding.searchEditText.text.toString().trim()
             if (query.isNotEmpty()) {
@@ -54,24 +55,31 @@ class MainActivity : AppCompatActivity() {
     private fun fetchMovies(query: String) {
         thread {
             try {
-                val url =
-                    URL("https://www.omdbapi.com/?apikey=$apiKey&s=${query.replace(" ", "+")}")
+                val apiUrl = "https://www.omdbapi.com/?apikey=$apiKey&s=${query.replace(" ", "+")}"
+                val url = URL(apiUrl)
                 val connection = url.openConnection() as HttpURLConnection
-                val response = connection.inputStream.bufferedReader().use { it.readText() }
+                connection.requestMethod = "GET"
 
+                val responseCode = connection.responseCode
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    throw Exception("HTTP error code: $responseCode")
+                }
+
+                val response = connection.inputStream.bufferedReader().use { it.readText() }
                 val json = JSONObject(response)
 
                 if (json.has("Search")) {
                     val searchArray = json.getJSONArray("Search")
                     val movies = mutableListOf<Movie>()
+
                     for (i in 0 until searchArray.length()) {
                         val obj = searchArray.getJSONObject(i)
                         val movie = Movie(
-                            Title = obj.getString("Title"),
-                            Year = obj.getString("Year"),
-                            imdbID = obj.getString("imdbID"),
-                            Type = obj.getString("Type"),
-                            Poster = obj.getString("Poster")
+                            Title = obj.optString("Title", "N/A"),
+                            Year = obj.optString("Year", "N/A"),
+                            imdbID = obj.optString("imdbID", ""),
+                            Type = obj.optString("Type", ""),
+                            Poster = obj.optString("Poster", "")
                         )
                         movies.add(movie)
                     }
@@ -82,8 +90,11 @@ class MainActivity : AppCompatActivity() {
                         movieAdapter.notifyDataSetChanged()
                     }
                 } else {
+                    val errorMsg = json.optString("Error", "No results found")
                     runOnUiThread {
-                        Toast.makeText(this, "No results found", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
+                        movieList.clear()
+                        movieAdapter.notifyDataSetChanged()
                     }
                 }
 
@@ -91,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             } catch (e: Exception) {
                 Log.e("OMDB_ERROR", "Failed to fetch movies", e)
                 runOnUiThread {
-                    Toast.makeText(this, "Error fetching data", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Error fetching data: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }

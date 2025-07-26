@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/yearTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Year"
+            android:paddingTop="8dp"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/plotTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Plot"
+            android:paddingTop="8dp"
+            tools:ignore="HardcodedText" />
+
+        <ImageView
+            android:id="@+id/posterImageView"
+            android:layout_width="200dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:paddingTop="16dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="Movie Poster"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
+</ScrollView>
